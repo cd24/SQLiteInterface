@@ -1,7 +1,5 @@
 package SQL;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import java.lang.reflect.Field;
 import java.util.Date;
 
@@ -46,16 +44,16 @@ public class SQLizable {
         if (f.get(this) == null){
             throw new IllegalAccessException("THE ATTRIBUTE: " + f.getName() + " IN CLASS " + this.getClass().getName() + " CANNOT BE NULL");
         }
-
-        value = f.get(this).toString();
-
-        if (f.getType() == boolean.class)
+        else if (value.length() == 0) {
+            value = f.get(this).toString();
+        }
+        else if (f.getType() == boolean.class)
             value = f.getBoolean(this) ? "0" : "1";
 
-        if (f.getType() == Date.class)
+        else if (f.getType() == Date.class)
             value = getDateAsString((Date) f.get(this));
 
-        if (f.getType() != String.class  && f.getType() != int.class)
+        else if (f.getType() != String.class  && f.getType() != int.class)
         {
             value = Integer.toString(getRelationID(f));
         }

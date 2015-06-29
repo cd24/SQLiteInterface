@@ -40,6 +40,14 @@ public class QuerySet<T extends SQLRow> {
         this.database = database;
     }
 
+    public Integer getItemCount() throws SQLException {
+        String countQuery = "SELECT count FROM " + this.tableName + " WHERE " + this.where;
+        ResultSet itemCount = this.query(countQuery);
+        Integer size = SQLRow.isResultSetEmpty(itemCount) ? 0 : itemCount.getInt(0);
+
+        return size;
+    }
+
     public T next(){
         if (this.currentIndex >= this.size){
             throw new IndexOutOfBoundsException("There are no more results\nCurrent Index: " + this.currentIndex + "\nMax Index: " + this.size);

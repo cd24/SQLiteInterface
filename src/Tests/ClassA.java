@@ -11,7 +11,7 @@ public class ClassA extends SQLRow {
     public String name;
 
     public ClassA(){
-        someItem = new ClassB();
+        someItem = null;
         numRepeats = 10;
         name = "Hello World!";
     }

@@ -1,12 +1,9 @@
 package SQL;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * Created by John on 4/16/2015.
@@ -127,7 +124,7 @@ public class SQLRow extends SQLizable{
             return false;
         }
 
-        public boolean isResultSetEmpty(ResultSet set) throws SQLException {
+        public static boolean isResultSetEmpty(ResultSet set) throws SQLException {
             if (set.isBeforeFirst()){
                 return true;
             }
