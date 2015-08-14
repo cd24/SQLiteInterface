@@ -8,13 +8,13 @@ import SQL.SQLRow;
 public class ClassB extends SQLRow {
     public int repeats;
     public String name;
-    public ClassA nonLoop;
+    //public ClassA nonLoop;
 
     public ClassB(){
         repeats = 20;
         name = "I'm glad you're here!";
-        nonLoop = new ClassA();
-        nonLoop.name = "Hello, second item";
-        nonLoop.numRepeats = 40;
+        //nonLoop = new ClassA();
+        //nonLoop.name = "Hello, second item";
+        //nonLoop.numRepeats = 40;
     }
 }

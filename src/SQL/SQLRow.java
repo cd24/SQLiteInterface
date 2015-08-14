@@ -11,6 +11,7 @@ import java.util.Date;
 public class SQLRow extends SQLizable{
 
     protected int id;
+    protected static boolean logging_verbose = false;
 
     public boolean isTable(Object o){
         return o.getClass().isAssignableFrom(SQLRow.class);
@@ -66,7 +67,11 @@ public class SQLRow extends SQLizable{
         }
 
         public String tableName(){
-            String fullName = getClass().getName();
+            return tableNameForClass(this.getClass());
+        }
+
+        public static String tableNameForClass(Class<?> clazz){
+            String fullName = clazz.getName();
             String[] components = fullName.split("\\.");
             String cName = components[components.length - 1];
 
@@ -144,6 +149,8 @@ public class SQLRow extends SQLizable{
             command("DROP TABLE if exists " + tableName());
         }
 
+        public void deleteAllRecords(){ command("DELETE FROM " + tableName()); }
+
         public void verifyDataBase(){
             command("CREATE TABLE if not exists " + tableName() + " (" + tableSchema() + ")");
         }
@@ -175,17 +182,22 @@ public class SQLRow extends SQLizable{
         }
 
         public ResultSet query(String query){
+            return query(query, this.dataBaseName());
+        }
 
+        public static ResultSet query(String query, String database){
             Connection conn = null;
             ResultSet set = null;
 
             try{
                 Class.forName("org.sqlite.JDBC");
 
-                conn = DriverManager.getConnection("jdbc:sqlite:" + dataBaseName());
+                conn = DriverManager.getConnection("jdbc:sqlite:" + database);
                 Statement q = conn.createStatement();
                 q.setQueryTimeout(30);
-                System.out.println(query);
+                if (logging_verbose){
+                    System.out.println(query);
+                }
                 set = q.executeQuery(query);
 
             } catch (SQLException e){
@@ -220,22 +232,28 @@ public class SQLRow extends SQLizable{
             }
         }
 
-         public QuerySet lazyAllWhere(String where){
+         public <T extends SQLRow> LazyList<T> lazyAllWhere(String where){
              if (tableExists()){
-                 QuerySet items = new QuerySet();
-                 items.setQuery(this.tableName(), where);
-                 items.prepare(this.getClass());
-                 items.setDatabase(this.dataBaseName());
+                 String tablename = this.tableName();
+                 LazyList items = new LazyList<T>(dataBaseName(), tablename, where, this.getClass());
 
                  return items;
              }
              else {
-                 return new QuerySet<>();
+                 return new LazyList<T>();
              }
+        }
+
+        public <T extends SQLRow> LazyList<T> lazyAll(){
+            return lazyAllWhere("");
         }
 
         public ArrayList getFromResultSet(ResultSet data)
         {
+            return getFromResultSet(data, getClass());
+        }
+
+        public ArrayList getFromResultSet(ResultSet data, Class<? extends SQLRow> type){
             ArrayList<SQLRow> results = new ArrayList<>();
 
 
@@ -244,7 +262,7 @@ public class SQLRow extends SQLizable{
                     return new ArrayList<>();
                 }
                 while(data.next()){
-                    SQLRow item = getClass().newInstance();
+                    SQLRow item = type.newInstance();
                     Field[] fields = item.getClass().getFields();
                     for (Field field : fields){
                         populateField(item, field, data);
@@ -306,7 +324,7 @@ public class SQLRow extends SQLizable{
             }
         }
 
-        public Date getDateFromString(String d){
+        public static Date getDateFromString(String d){
             Date date = new Date();
             Long t = Long.parseLong(d);
             date.setTime(t);

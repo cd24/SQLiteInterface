@@ -142,7 +142,6 @@ public class SQLizable {
                 escape += letter;
             }
         }
-        System.out.println("Escaped: " + escape);
         return escape;
     }
 }
