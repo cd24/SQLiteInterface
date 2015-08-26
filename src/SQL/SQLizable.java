@@ -44,18 +44,21 @@ public class SQLizable {
         if (f.get(this) == null){
             throw new IllegalAccessException("THE ATTRIBUTE: " + f.getName() + " IN CLASS " + this.getClass().getName() + " CANNOT BE NULL");
         }
-        else if (value.length() == 0) {
-            value = f.get(this).toString();
-        }
-        else if (f.getType() == boolean.class)
-            value = f.getBoolean(this) ? "0" : "1";
 
-        else if (f.getType() == Date.class)
-            value = getDateAsString((Date) f.get(this));
-
-        else if (f.getType() != String.class  && f.getType() != int.class)
-        {
+        Class<?> type = f.getType();
+        boolean isObject = SQLRow.class.isAssignableFrom(type);
+        if (SQLRow.class.isAssignableFrom(type)) {
             value = Integer.toString(getRelationID(f));
+            System.out.print("");
+        }
+        else if (f.getType() == boolean.class) {
+            value = f.getBoolean(this) ? "0" : "1";
+        }
+        else if (f.getType() == Date.class) {
+            value = getDateAsString((Date) f.get(this));
+        }
+        else {
+            value = f.get(this).toString();
         }
 
         return "'" + escape(value) + "'";
@@ -111,23 +114,9 @@ public class SQLizable {
     }
 
     public int getRelationID(Field f) throws IllegalAccessException {
-
-        if (isTable(f.get(this))){
-            //instantiate to it's object type and determine ID
-        }
-        else {
-            //manual save to object -- should probably create some statics for this.
-        }
-
-        Class<?> type = f.getType();
-         SQLRow item;
-        item = (SQLRow)f.get(this);
-
-        if (item.existsInTable()){
-            return item.id();
-        }
-
+        SQLRow item = (SQLRow)f.get(this);
         item.save();
+
         return item.id();
     }
 

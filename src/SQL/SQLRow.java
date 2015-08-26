@@ -8,9 +8,10 @@ import java.util.Date;
 /**
  * Created by John on 4/16/2015.
  */
-public class SQLRow extends SQLizable{
+public class SQLRow extends SQLizable {
 
     protected int id;
+    protected boolean saving = false;
     protected static boolean logging_verbose = false;
 
     public boolean isTable(Object o){
@@ -18,16 +19,13 @@ public class SQLRow extends SQLizable{
     }
 
     public SQLRow getRelationFromID(Field f, int id) throws IllegalAccessException, InstantiationException {
-        Class<?> objClass = f.get(this).getClass();
-        String[] names = objClass.getName().split("\\.");
-        String className = names[names.length - 1].toLowerCase();
-        System.out.println(className);
+        Class<?> objClass = f.getClass();
+        String className = tableNameForClass(objClass);
 
-        int item = (int) f.get(this);
-        ResultSet attributes = query("SELECT * FROM " + className + " WHERE id='" + item + "'");
+        ResultSet attributes = query("SELECT * FROM " + className + " WHERE id='" + id + "'");
         SQLRow object = (SQLRow) objClass.newInstance();
-
         object.getFromResultSet(attributes);
+
         return object;
     }
         public String tableSchema(){
@@ -85,22 +83,27 @@ public class SQLRow extends SQLizable{
         }
 
         public void afterSave(){
-            //This is a placeholder method that gives the user the ability to perform specific tasks immidiately after the save.
+            //This is a placeholder method that gives the user the ability to perform specific tasks immediately after the save.
         }
 
         public void save(){
+            if (saving){
+                return;
+            }
+            saving = true;
             verifyDataBase();
-            String cmd = "INSERT INTO " + tableName() + " " + asSQLValue();
+            String cmd = "";
 
             if (existsInTable()){
                 cmd = "UPDATE " + tableName() + " SET " + updateValue() + " WHERE id = " + this.id();
                 command(cmd);
             }
             else {
-                int id = command(cmd);
-                this.id = id;
+                cmd = "INSERT INTO " + tableName() + " " + asSQLValue();
+                this.id = command(cmd);
             }
             afterSave();
+            saving = false;
         }
 
         public boolean existsInTable(){
@@ -195,11 +198,10 @@ public class SQLRow extends SQLizable{
                 conn = DriverManager.getConnection("jdbc:sqlite:" + database);
                 Statement q = conn.createStatement();
                 q.setQueryTimeout(30);
-                if (logging_verbose){
+                if (logging_verbose)
                     System.out.println(query);
-                }
-                set = q.executeQuery(query);
 
+                set = q.executeQuery(query);
             } catch (SQLException e){
                 e.printStackTrace();
             }

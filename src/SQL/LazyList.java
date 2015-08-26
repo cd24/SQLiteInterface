@@ -2,11 +2,12 @@ package SQL;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by John on 4/17/2015.
  */
-public class LazyList<T extends SQLRow> {
+public class LazyList<T extends SQLRow> implements Iterable{
 
     /*
     * Lazy Evaluator for sql sets.
@@ -90,5 +91,11 @@ public class LazyList<T extends SQLRow> {
 
     private ResultSet query(String query){
         return SQLRow.query(query, this.database);
+    }
+
+    @Override
+    public Iterator iterator() {
+        LazyIterator<T> iter =  new LazyIterator<T>(this);
+        return iter;
     }
 }

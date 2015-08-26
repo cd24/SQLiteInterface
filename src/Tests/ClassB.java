@@ -10,10 +10,18 @@ public class ClassB extends SQLRow {
     public String name;
     //public ClassA nonLoop;
 
+
     public ClassB(){
+        this.repeats = 0;
+        this.name = "";
+        //this.nonLoop = null;
+    }
+
+    public ClassB(ClassA parent){
         repeats = 20;
         name = "I'm glad you're here!";
         //nonLoop = new ClassA();
+        //this.nonLoop = parent;
         //nonLoop.name = "Hello, second item";
         //nonLoop.numRepeats = 40;
     }
