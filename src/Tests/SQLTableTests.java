@@ -15,6 +15,7 @@ public class SQLTableTests {
     @org.junit.Before
     public void setUp() throws Exception {
         aItem = new ClassA();
+        ClassA someItem = new ClassA();
         bItem = new ClassB(aItem);
         aItem.drop();
         bItem.drop();
@@ -24,6 +25,7 @@ public class SQLTableTests {
         bItem.name = "Item B";
         aItem.save();
         bItem.save();
+        someItem.save();
     }
 
     @org.junit.After

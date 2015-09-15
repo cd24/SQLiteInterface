@@ -7,7 +7,7 @@ import java.util.Iterator;
 /**
  * Created by John on 4/17/2015.
  */
-public class LazyList<T extends SQLRow> implements Iterable{
+public class LazyList<T extends SQLRow> implements Iterable<T> {
 
     /*
     * Lazy Evaluator for sql sets.
@@ -15,7 +15,7 @@ public class LazyList<T extends SQLRow> implements Iterable{
     */
 
     private int size, currentIndex, retrieved;
-    private String query, tableName, where, database;
+    private String query, tableName, where;
     private Class<? extends SQLRow> type;
 
     public LazyList(){
@@ -25,9 +25,8 @@ public class LazyList<T extends SQLRow> implements Iterable{
         this.query = "";
     }
 
-    public LazyList(String database, String tableName, String where, Class<? extends SQLRow> type){
+    public LazyList(String tableName, String where, Class<? extends SQLRow> type){
         this();
-        this.database = database;
         this.where = where;
         this.type = type;
         this.tableName = tableName;
@@ -45,14 +44,6 @@ public class LazyList<T extends SQLRow> implements Iterable{
         this.tableName = tableName;
         this.where = "";
         this.size = this.getNumEntries();
-    }
-
-    public void setDatabase(String database){
-        this.database = database;
-    }
-
-    public void setType(Class<?> type){
-
     }
 
     public int getNumEntries() {
@@ -90,11 +81,11 @@ public class LazyList<T extends SQLRow> implements Iterable{
     }
 
     private ResultSet query(String query){
-        return SQLRow.query(query, this.database);
+        return DBManager.getInstance().query(query);
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         LazyIterator<T> iter =  new LazyIterator<T>(this);
         return iter;
     }
