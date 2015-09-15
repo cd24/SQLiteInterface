@@ -3,9 +3,6 @@ package Tests;
 import SQL.LazyList;
 import org.junit.Test;
 
-/**
- * Created by John on 4/16/2015.
- */
 public class SQLTableTests {
 
     public ClassA aItem;

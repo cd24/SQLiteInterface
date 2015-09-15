@@ -5,9 +5,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by John on 4/16/2015.
- */
 public class SQLRow extends SQLizable {
 
     protected int id;

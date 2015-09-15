@@ -2,9 +2,6 @@ package SQL;
 
 import java.sql.*;
 
-/**
- * Created by john on 9/15/15.
- */
 public class DBManager {
     private static DBManager ourInstance = new DBManager();
     private Connection connection;

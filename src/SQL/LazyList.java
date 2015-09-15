@@ -4,9 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * Created by John on 4/17/2015.
- */
 public class LazyList<T extends SQLRow> implements Iterable<T> {
 
     /*

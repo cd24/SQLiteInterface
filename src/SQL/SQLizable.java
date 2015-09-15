@@ -3,9 +3,6 @@ package SQL;
 import java.lang.reflect.Field;
 import java.util.Date;
 
-/**
- * Created by John on 4/16/2015.
- */
 public class SQLizable {
 
     public String asSQLValue()  {
