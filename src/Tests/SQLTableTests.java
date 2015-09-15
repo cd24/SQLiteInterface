@@ -14,6 +14,14 @@ public class SQLTableTests {
 
     @org.junit.Before
     public void setUp() throws Exception {
+    }
+
+    @org.junit.After
+    public void tearDown() throws Exception {
+    }
+
+    @Test
+    public void testSave(){
         aItem = new ClassA();
         ClassA someItem = new ClassA();
         bItem = new ClassB(aItem);
@@ -26,15 +34,6 @@ public class SQLTableTests {
         aItem.save();
         bItem.save();
         someItem.save();
-    }
-
-    @org.junit.After
-    public void tearDown() throws Exception {
-    }
-
-    @Test
-    public void testSave(){
-        aItem.save();
     }
 
     @Test
@@ -54,7 +53,7 @@ public class SQLTableTests {
         while(lazyList.hasNext()){
             System.out.println("New item: ");
             ClassA item = lazyList.next();
-            System.out.println("name: " + item.name + ", partner ID: " + item.someItem.id());
+            System.out.println("name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
             count++;
         }
 

@@ -32,9 +32,7 @@ public class DBManager {
     public int command(String command){
         int row = -1;
         try{
-            if (!connection.isValid(100)){
-                refresh();
-            }
+            validateDB();
             PreparedStatement query = this.connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
             query.setQueryTimeout(30);
 
@@ -55,9 +53,7 @@ public class DBManager {
         ResultSet set = null;
 
         try{
-            if (!connection.isValid(100)){
-                refresh();
-            }
+            validateDB();
             Statement q = this.connection.createStatement();
             q.setQueryTimeout(30);
             if (logging_verbose)
@@ -73,9 +69,20 @@ public class DBManager {
     }
 
     public void refresh() throws SQLException {
+        if (logging_verbose)
+            System.out.println("Refreshing connection to database: " + dataBaseName());
         if (connection != null){
             connection.close();
         }
         connection = DriverManager.getConnection("jdbc:sqlite:" + dataBaseName());
+    }
+
+    public void validateDB() throws SQLException {
+        if (logging_verbose)
+            System.out.println("Validating connection to database: " + dataBaseName());
+        if (connection != null && !connection.isValid(1000)){
+            return;
+        }
+        refresh();
     }
 }

@@ -13,7 +13,7 @@ public class ClassB extends SQLRow {
 
     public ClassB(){
         this.repeats = 0;
-        this.name = "";
+        this.name = "Neat, this is a child.";
         //this.nonLoop = null;
     }
 

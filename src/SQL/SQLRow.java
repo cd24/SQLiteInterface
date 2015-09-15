@@ -18,15 +18,14 @@ public class SQLRow extends SQLizable {
         return o.getClass().isAssignableFrom(SQLRow.class);
     }
 
-    public SQLRow getRelationFromID(Field f, int id) throws IllegalAccessException, InstantiationException {
-        Class<?> objClass = f.getClass();
+    public <T extends SQLRow> T getRelationFromID(Field f, int id) throws IllegalAccessException, InstantiationException {
+        Class<? extends SQLRow> objClass = (Class<? extends SQLRow>) f.getType();
         String className = tableNameForClass(objClass);
 
         ResultSet attributes = query("SELECT * FROM " + className + " WHERE id='" + id + "'");
-        SQLRow object = (SQLRow) objClass.newInstance();
-        object.getFromResultSet(attributes);
+        ArrayList<SQLRow> object = new SQLRow().getFromResultSet(attributes, objClass);
 
-        return object;
+        return (T) object.get(0);
     }
     public String tableSchema(){
         Field[] fields = getClass().getFields();
@@ -98,7 +97,7 @@ public class SQLRow extends SQLizable {
         String cmd = "";
 
         if (existsInTable()){
-            cmd = "UPDATE " + tableName() + " SET " + updateValue() + " WHERE id = " + this.id();
+            cmd = "UPDATE " + tableName() + " SET " + updateValue() + " WHERE id = '" + this.id() + "'";
             database.command(cmd);
         }
         else {
@@ -272,7 +271,7 @@ public class SQLRow extends SQLizable {
             Date date = getDateFromString(time);
             f.set(obj, date);
         }
-        else if (type.isAssignableFrom(SQLRow.class)){
+        else if (SQLRow.class.isAssignableFrom(type)){
             int id = s.getInt(name);
             SQLRow object = getRelationFromID(f, id);
             f.set(obj, object);
