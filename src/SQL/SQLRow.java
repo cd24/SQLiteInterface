@@ -250,12 +250,11 @@ public class SQLRow extends SQLizable {
             return lazyAllWhere("");
         }
 
-        public ArrayList getFromResultSet(ResultSet data)
-        {
+        public ArrayList<SQLRow> getFromResultSet(ResultSet data) {
             return getFromResultSet(data, getClass());
         }
 
-        public ArrayList getFromResultSet(ResultSet data, Class<? extends SQLRow> type){
+        public ArrayList<SQLRow> getFromResultSet(ResultSet data, Class<? extends SQLRow> type)  {
             ArrayList<SQLRow> results = new ArrayList<>();
 
 
@@ -266,6 +265,7 @@ public class SQLRow extends SQLizable {
                 while(data.next()){
                     SQLRow item = type.newInstance();
                     Field[] fields = item.getClass().getFields();
+                    item.id = data.getInt("id");
                     for (Field field : fields){
                         populateField(item, field, data);
                     }

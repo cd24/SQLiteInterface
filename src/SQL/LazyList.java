@@ -81,7 +81,7 @@ public class LazyList<T extends SQLRow> implements Iterable{
         ArrayList returned = new SQLRow().getFromResultSet(resultSet, this.type);
         T value = (T) returned.get(0);
         ++this.retrieved;
-        this.currentIndex = value.id;
+        ++this.currentIndex;
         return value;
     }
 

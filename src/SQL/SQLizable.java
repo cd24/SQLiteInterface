@@ -46,7 +46,6 @@ public class SQLizable {
         }
 
         Class<?> type = f.getType();
-        boolean isObject = SQLRow.class.isAssignableFrom(type);
         if (SQLRow.class.isAssignableFrom(type)) {
             value = Integer.toString(getRelationID(f));
             System.out.print("");

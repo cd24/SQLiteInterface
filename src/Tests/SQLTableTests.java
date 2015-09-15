@@ -59,7 +59,6 @@ public class SQLTableTests {
         System.out.println("Count from lazy list: " + count);
     }
 
-    /*
     @Test
     public void testIterable(){
         LazyList<ClassA> someList = new ClassA().lazyAll();
@@ -69,5 +68,4 @@ public class SQLTableTests {
             System.out.println("Item Name: " + a.name);
         }
     }
-    */
 }
