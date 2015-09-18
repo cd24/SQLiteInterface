@@ -21,9 +21,11 @@ public class SQLTableTests {
     public void testSave(){
         aItem = new ClassA();
         ClassA someItem = new ClassA();
+        ClassB someOtherItem = new ClassB(someItem);
         bItem = new ClassB(aItem);
         aItem.drop();
         bItem.drop();
+        someItem.someItem = someOtherItem;
 
 
         aItem.name = "Item A";
@@ -65,5 +67,7 @@ public class SQLTableTests {
             ClassA a = (ClassA) item;
             System.out.println("Item Name: " + a.name);
         }
+
+
     }
 }
