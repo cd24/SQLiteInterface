@@ -69,7 +69,7 @@ public class LazyList<T extends SQLRow> implements Iterable<T> {
         ArrayList returned = new SQLRow().getFromResultSet(resultSet, this.type);
         T value = (T) returned.get(0);
         ++this.retrieved;
-        ++this.currentIndex;
+        this.currentIndex = value.id;
         return value;
     }
 
