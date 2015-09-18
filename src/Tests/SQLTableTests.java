@@ -29,6 +29,7 @@ public class SQLTableTests {
 
 
         aItem.name = "Item A";
+        someItem.name = "Item A";
         bItem.name = "Item B";
         aItem.save();
         bItem.save();
@@ -54,6 +55,16 @@ public class SQLTableTests {
             ClassA item = lazyList.next();
             System.out.println("name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
             count++;
+        }
+
+        LazyList<ClassA> lazyWhere = new ClassA().lazyAllWhere("name='Hello World!'");
+        for (ClassA item : lazyWhere){
+            System.out.println("LazyWhere name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
+        }
+
+        LazyList<ClassA> lazyWhere2 = new ClassA().lazyAllWhere("name='Item A'");
+        for (ClassA item : lazyWhere2){
+            System.out.println("LazyWhere2 name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
         }
 
         System.out.println("Count from lazy list: " + count);
