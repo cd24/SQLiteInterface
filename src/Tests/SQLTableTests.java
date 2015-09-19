@@ -1,7 +1,11 @@
 package Tests;
 
+import SQL.DBManager;
 import SQL.LazyList;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SQLTableTests {
 
@@ -15,6 +19,8 @@ public class SQLTableTests {
 
     @org.junit.After
     public void tearDown() throws Exception {
+        new ClassA().drop();
+        new ClassB().drop();
     }
 
     @Test
@@ -38,8 +44,8 @@ public class SQLTableTests {
 
     @Test
     public void testLoad(){
-        ClassA found = new ClassA().where("id='0'");
-        System.out.println(found);
+        ClassA found = new ClassA().where("id='1'");
+        assertTrue(found != null);
     }
 
     @Test
@@ -49,36 +55,62 @@ public class SQLTableTests {
         newItem.save();
 
         LazyList<ClassA> lazyList = new ClassA().lazyAll();
-        int count = 0;
         while(lazyList.hasNext()){
-            System.out.println("New item: ");
             ClassA item = lazyList.next();
-            System.out.println("name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
-            count++;
+            assertTrue(isValidReturnA(item));
+            System.out.println("Name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
         }
 
         LazyList<ClassA> lazyWhere = new ClassA().lazyAllWhere("name='Hello World!'");
         for (ClassA item : lazyWhere){
+            assertTrue(isValidReturnA(item));
             System.out.println("LazyWhere name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
         }
 
         LazyList<ClassA> lazyWhere2 = new ClassA().lazyAllWhere("name='Item A'");
         for (ClassA item : lazyWhere2){
+            assertTrue(isValidReturnA(item));
             System.out.println("LazyWhere2 name: " + item.name + ", partner Name: " + item.someItem.name + ", partner ID: " + item.someItem.id());
         }
-
-        System.out.println("Count from lazy list: " + count);
     }
 
     @Test
     public void testIterable(){
         LazyList<ClassA> someList = new ClassA().lazyAll();
 
-        for (Object item : someList){
-            ClassA a = (ClassA) item;
-            System.out.println("Item Name: " + a.name);
+        for (ClassA item : someList){
+            assertTrue(isValidReturnA(item));
+            System.out.println("Item Name: " + item.name);
+        }
+    }
+
+    @Test
+    public void testLazyEvalWithSkips(){
+        new ClassA().drop();
+
+        for (int i = 0; i < 20; ++i){
+            ClassA newItem = new ClassA();
+            newItem.name = i % 2 == 0 ? Integer.toString(i) : "30";
+            newItem.numRepeats = i;
+            newItem.save();
         }
 
+        LazyList<ClassA> items = new ClassA().lazyAllWhere("name='30'");
+        LazyList<ClassA> allItems = new ClassA().lazyAll();
+        assertEquals(10, items.count());
+        assertEquals(20, allItems.count());
+        for (ClassA item : items){
+            System.out.println("ID in Mod: " + item.id() + " name " + item.name);
+            assertTrue(item.id() % 2 == 0);
+        }
+    }
 
+    @Test
+    public void testSaveTime(){
+
+    }
+
+    public boolean isValidReturnA(ClassA element){
+        return element != null && element.someItem != null && element.someItem.id() > 0 && element.id() > 0;
     }
 }

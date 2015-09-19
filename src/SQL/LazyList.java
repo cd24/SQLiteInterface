@@ -81,6 +81,10 @@ public class LazyList<T extends SQLRow> implements Iterable<T> {
         return DBManager.getInstance().query(query);
     }
 
+    public int count(){
+        return size;
+    }
+
     @Override
     public Iterator<T> iterator() {
         LazyIterator<T> iter =  new LazyIterator<T>(this);

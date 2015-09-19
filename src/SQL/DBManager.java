@@ -31,7 +31,7 @@ public class DBManager {
         try{
             validateDB();
             PreparedStatement query = this.connection.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
-            query.setQueryTimeout(30);
+            query.setQueryTimeout(1000);
 
             query.executeUpdate();
 
@@ -39,9 +39,7 @@ public class DBManager {
             if (Keys.next()) {
                 row = Keys.getInt(1);
             }
-
         } catch (SQLException e){
-            e.printStackTrace();
         }
         return row;
     }
@@ -52,7 +50,7 @@ public class DBManager {
         try{
             validateDB();
             Statement q = this.connection.createStatement();
-            q.setQueryTimeout(30);
+            q.setQueryTimeout(1000);
             if (logging_verbose)
                 System.out.println(query);
 
@@ -81,5 +79,19 @@ public class DBManager {
             return;
         }
         refresh();
+    }
+
+    @Deprecated
+    public boolean dbLocked(){
+        String query = "SELECT COUNT(*) FROM sqlite_master";
+        try{
+            validateDB();
+            PreparedStatement q = this.connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            q.setQueryTimeout(1000);
+            q.executeUpdate();
+            return false;
+        } catch (SQLException e){
+            return true;
+        }
     }
 }
