@@ -107,7 +107,32 @@ public class SQLTableTests {
 
     @Test
     public void testSaveTime(){
+        long[] times = new long[100];
+        for (int i = 0; i < times.length; ++i) {
+            ClassA classa = new ClassA();
+            classa.name = "I AM UNIQUE, I SWEAR";
+            classa.numRepeats = i;
+            long start_time = System.currentTimeMillis();
+            classa.save();
+            long duration = System.currentTimeMillis() - start_time;
+            times[i] = duration;
+        }
+        long average = 0;
+        for (int i = 0; i < times.length; ++i){
+            average += times[i];
+        }
+        average = average/times.length;
+        System.out.println("Average time: " + average);
+    }
 
+    @Test
+    public void testListSave(){
+        long[] elements = {1, 2, 3, 4, 4, 4, 5, 2, 3, 1, 2, 2};
+        ListClass listClass = new ListClass(elements);
+        listClass.save();
+
+        ListClass returned = new ListClass().where("id='2'");
+        System.out.println(returned);
     }
 
     public boolean isValidReturnA(ClassA element){

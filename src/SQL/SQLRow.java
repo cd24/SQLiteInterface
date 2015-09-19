@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SQLRow extends SQLizable {
 
@@ -49,10 +50,13 @@ public class SQLRow extends SQLizable {
         else if (type == String.class) {
             return f.getName() + " TEXT";
         }
+        else if (List.class.isAssignableFrom(type)){
+            return f.getName() + " TEXT";
+        }
         else if (type == Date.class){
             return f.getName() + " TEXT";
         }
-        else if (type.isAssignableFrom(SQLRow.class)){
+        else if (SQLRow.class.isAssignableFrom(type)){
             return f.getName() + " INTEGER";
         }
         else {
@@ -272,6 +276,18 @@ public class SQLRow extends SQLizable {
             int id = s.getInt(name);
             SQLRow object = getRelationFromID(f, id);
             f.set(obj, object);
+        }
+        else if (List.class.isAssignableFrom(type)){ //only supports numbers right now
+            //todo: extend this to support more than just number classes;
+            List data = new ArrayList<>();
+            String value = s.getString(name);
+            value = value.replace('[', ' ');
+            value = value.replace(']', ' ');
+            value = value.replace(" ", "");
+            for (String id : value.split("\\,")){
+                data.add(Long.parseLong(id));
+            }
+            f.set(obj, data);
         }
     }
 

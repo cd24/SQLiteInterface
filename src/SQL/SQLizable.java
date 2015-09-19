@@ -2,6 +2,7 @@ package SQL;
 
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.List;
 
 public class SQLizable {
 
@@ -58,6 +59,15 @@ public class SQLizable {
         }
 
         return "'" + escape(value) + "'";
+    }
+
+    public String getObjectAsString(Class<?> type, Field f) throws IllegalAccessException {
+        if (SQLRow.class.isAssignableFrom(type)){
+            return Integer.toString(getRelationID(f));
+        }
+        else {
+            return f.get(this).toString();
+        }
     }
 
     public String updateValue() {
