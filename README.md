@@ -12,7 +12,7 @@ An example of use can be found in the tests package.
 
 To enable saving a class, simply extend SQLRow.  This class MUST implement an empty constructor (used for rehydrating objects).  You may have as many alternate constructors as needed, they will not affect the process of saving.
 
-```
+``` java
 public class ClassA extends SQLRow {
     public int numRepeats;
     public String name;
@@ -26,7 +26,7 @@ public class ClassA extends SQLRow {
 
 now anywhere we have an object of type ClassA, we can call .save() to write the object to the database. 
 
-```
+``` java
 ClassA myClass = new ClassA();
 myClass.name = "some new name";
 myClass.save() //Writes to database
@@ -34,14 +34,14 @@ myClass.save() //Writes to database
 
 Additionally, you can read in all of the items saved or a set of items saved using a standard SQL where. 
 
-```
+``` java
 ClassA myClass = new ClassA().where("name='some new name'");
 ```
 would load in the object we just saved to the database.  
 
 There are also several standard utility functions for maintaing and destroying objects/tables at runtime.
 
-```
+``` java
 myClass.delete(); //deletes object
 myClass.drop(); //drops the table generated for ClassA
 myClass.deleteAllRecords(); //empties the table, but preserves the table structure
